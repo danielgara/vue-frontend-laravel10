@@ -1,17 +1,18 @@
 import axios from 'axios';
-import Product from '@/models/Product';
-import { plainToClass } from "class-transformer";
+import type Product from '@/interfaces/Product';
 
 export default class ProductService {
-  public static async getAll(): Promise<Product[] | null> {
-    const result = await axios.get('http://127.0.0.1:8000/api/products');
-    const productsData = result.data;
-    const products:Product[] = [];
-    for (let i = 0; i < productsData.length; i += 1) {
-      let product = plainToClass(Product, productsData[i] as Object);
-      products.push(product);
+  public static async getAll(): Promise<Product[]> {
+    const apiUrl = 'http://127.0.0.1:8000/api/products';
+    try {
+      const response = await axios.get<Product[]>(apiUrl);
+      const products: Product[] = response.data;
+      console.log(products);
+      return products;
+    } catch (error) {
+      console.log(error);
+      return [];
     }
-    return products;
   }
 }
 
